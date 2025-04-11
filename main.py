@@ -1,63 +1,63 @@
-def best_first_search(graph, depart, but):
+def best_first_search(graph, start, goal):
     """
-    Implémentation de l'algorithme Best-First Search pour un graphe pondéré.
+    Implementation of the Best-First Search algorithm for a weighted graph.
 
     Args:
-        graph: Le graphe représenté comme un dictionnaire d'adjacence
-        depart: Le nœud de départ
-        but: Le nœud objectif
+        graph: The graph represented as an adjacency dictionary
+        start: The starting node
+        goal: The goal node
 
     Returns:
-        Un tuple (chemin, coût_total) si une solution est trouvée, (None, 0) sinon
+        A tuple (path, total_cost) if a solution is found, (None, 0) otherwise
     """
-    # Initialiser la liste ouverte avec le nœud de départ
-    # Format: (coût_actuel, noeud, chemin)
-    liste_ouverte = [(0, depart, [depart])]
-    visites = set()
+    # Initialize the open list with the starting node
+    # Format: (current_cost, node, path)
+    open_list = [(0, start, [start])]
+    visited = set()
 
-    print(f"Initialisation:")
-    print(f"Liste ouverte: {[item for item in liste_ouverte]}")
-    print(f"Nœuds visités: {visites}\n")
+    print(f"Initialization:")
+    print(f"Open list: {[item for item in open_list]}")
+    print(f"Visited nodes: {visited}\n")
 
-    while liste_ouverte:
-        # Trier la liste selon le coût actuel (premier élément du tuple)
-        liste_ouverte.sort(key=lambda x: x[0])
+    while open_list:
+        # Sort the list by current cost (first element of the tuple)
+        open_list.sort(key=lambda x: x[0])
 
-        # Extraire le nœud avec le coût le plus bas
-        cout_actuel, noeud, chemin = liste_ouverte.pop(0)
+        # Extract the node with the lowest cost
+        current_cost, node, path = open_list.pop(0)
 
-        # Si ce nœud est l'objectif, retourner la solution
-        if noeud == but:
-            visites.add(noeud)
-            print(f"Liste ouverte: {[item for item in liste_ouverte]}")
-            print(f"Nœuds visités: {visites}")
-            print(f"Solution trouvée: {' -> '.join(chemin)}, Coût total: {cout_actuel}")
-            return chemin, cout_actuel
+        # If this node is the goal, return the solution
+        if node == goal:
+            visited.add(node)
+            print(f"Open list: {[item for item in open_list]}")
+            print(f"Visited nodes: {visited}")
+            print(f"Solution found: {' -> '.join(path)}, Total cost: {current_cost}")
+            return path, current_cost
 
-        # Ignorer si déjà visité
-        if noeud in visites:
+        # Skip if already visited
+        if node in visited:
             continue
 
-        # Marquer comme visité
-        visites.add(noeud)
+        # Mark as visited
+        visited.add(node)
 
-        # Générer les successeurs
-        for voisin, poids in graph.get(noeud, []):
-            if voisin not in visites:
-                nouveau_chemin = chemin + [voisin]
-                nouveau_cout = cout_actuel + poids
-                liste_ouverte.append((nouveau_cout, voisin, nouveau_chemin))
+        # Generate successors
+        for neighbor, weight in graph.get(node, []):
+            if neighbor not in visited:
+                new_path = path + [neighbor]
+                new_cost = current_cost + weight
+                open_list.append((new_cost, neighbor, new_path))
 
-        print(f"\nNœud traité: {noeud}")
-        print(f"Liste ouverte: {[item for item in liste_ouverte]}")
-        print(f"Nœuds visités: {visites}")
+        print(f"\nProcessed node: {node}")
+        print(f"Open list: {[item for item in open_list]}")
+        print(f"Visited nodes: {visited}")
 
-    # Si la liste est vide et qu'aucune solution n'a été trouvée
-    print("\nÉchec: aucun chemin trouvé.")
+    # If the list is empty and no solution was found
+    print("\nFailure: no path found.")
     return None, 0
 
 
-# Définition du graphe
+# Graph definition
 graph = {
     'S': [('A', 5), ('B', 2), ('C', 4)],
     'A': [('D', 9), ('E', 4)],
@@ -70,15 +70,16 @@ graph = {
     'H': []
 }
 
-# Exécution de l'algorithme
+# Run the algorithm
 print("=== Best-First Search ===")
 start_node = 'S'
 goal_node = 'G'
 solution_path, total_cost = best_first_search(graph, start_node, goal_node)
 
+# Display results
 if solution_path:
-    print("\n=== Résultat final ===")
-    print(f"Chemin optimal: {' -> '.join(solution_path)}")
-    print(f"Coût total: {total_cost}")
+    print("\n=== Final Result ===")
+    print(f"Optimal path: {' -> '.join(solution_path)}")
+    print(f"Total cost: {total_cost}")
 else:
-    print("\nAucun chemin trouvé entre le nœud de départ et l'objectif.")
+    print("\nNo path found between the start node and the goal.")
